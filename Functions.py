@@ -1,24 +1,36 @@
+#En este script se definen funciones para realizar limpieza y normalización de los datos sobre
+#consumo de energía y emisiones de CO2
+
 import pandas as pd
 
+# formato es una funcion que utilizamos para cambiar NaN, - y otro simbolos que aparecen en los csv por 0
 def formato(df):
     df.fillna(0, inplace=True)
     df.replace("-",0, inplace=True)
     df.replace("^",0, inplace=True)
     return df
+
+#esta función se utiliza para simplificar la lectura de archivos .csv
 def lectura_csv(url):
     df=pd.read_csv(url)
     return df
+
+#cambiar_ nombre_x_id_años es una funcion para agregar un campo de Id_Anio a cada una de las tablas
+#con las que trabajamos. basádonos en la tabla llamada year.csv
 def cambiar_nobre_x_id_años(df_años,df):
     for i,e in enumerate(df_años['Anio']):
         id= df_años.loc[i,'Id_Años']
         df.loc[df['Año']==e,'Id_anio']=id
     return df
+
+#Funcion para llenar el campo Id_Pais refernciado con la tabla paises 
 def llenar_Id_Pais(df_paises,df): 
     for i,p in enumerate(df_paises['Pais']):
         cod= df_paises.loc[i,'Id_pais']
         df.loc[df['Pais']==p,'Id_Pais']=cod
     return df
 
+#países_map es una función creada para corregir paises por escritura incorrecta 
 def paises_map(df):
       df['Pais']=df['Pais'].map({'Denmark':'Denmark', 
             'US':'United States', 'Germany':'Germany', 'Netherlands':'Netherlands',
