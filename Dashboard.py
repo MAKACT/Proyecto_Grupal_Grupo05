@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyPB1B5Bo9ON1PzgjiJNhAhl",
+      "authorship_tag": "ABX9TyNVKxma9MFbsJIqc+E1cXlY",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -27,6 +27,15 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "Script para la creación del Dashboard"
+      ],
+      "metadata": {
+        "id": "jYNDg6rRa5f4"
+      }
+    },
+    {
       "cell_type": "code",
       "source": [
         "%%writefile app.py\n",
@@ -42,6 +51,10 @@
         "\n",
         "conexion= create_engine('postgresql://{user}:{pw}@{host}:{port}/{db}'.format(\n",
         "    user='postgres', pw='postgres', host='database-grupo5.cgmzd7suyc4v.us-east-1.rds.amazonaws.com',port='5432',db='postgres', echo=False))\n",
+        "\n",
+        "\n",
+        "st.set_page_config(page_title='Equipo 5 - Henry')\n",
+        "st.title('Proyecto Grupal - Equipo 5')\n",
         "\n",
         "paises = pd.read_sql_query('SELECT * FROM \"Paises\"',con=conexion)\n",
         "anos = pd.read_sql_query('SELECT * FROM \"Años\"' ,con=conexion)\n",
@@ -193,7 +206,7 @@
         "                    color_continuous_midpoint = 3,\n",
         "color_continuous_scale=px.colors.sequential.thermal_r,\n",
         "range_color=(min_value,max_value))\n",
-        "fig3.update_layout(title_text = 'Produccion Total de Energías Renovables (TWh)', font_size=14)\n",
+        "fig3.update_layout(width=800, height=500, title_text = 'Produccion Total de Energías Renovables (TWh)', font_size=14)\n",
         "st.plotly_chart(fig3)\n",
         "\n",
         "\n",
@@ -247,7 +260,7 @@
         " locationmode = \"ISO-3\", \n",
         " z = FR_Energias_limpias2021.Energia_Limpia)\n",
         "\n",
-        "layout1 = dict(title = 'Consumo energía limpia / consumo total en 2021', title_x=0.5, title_font_size=30, geo = {'scope':'world'})\n",
+        "layout1 = dict(title = 'Consumo energía limpia / consumo total en 2021', title_x=0.5, geo = {'scope':'world'})\n",
         "FR_x1 = go.Figure(data=[data1],\n",
         "layout = layout1)\n",
         "st.write(FR_x1)\n",
@@ -323,6 +336,21 @@
         "    alfas[pais] = reg.coef_[0][0]\n",
         "    betas[pais] = reg.intercept_[0]\n",
         "    score[pais] =reg.score(X,y)\n",
+        "\n",
+        "#Cambio para Japon por el accidente de 2011\n",
+        "\n",
+        "seriepais=KPI5.loc[\"Japan\"]\n",
+        "seriepais=seriepais.loc[2012:2021]\n",
+        "seriepais=pd.DataFrame(seriepais)\n",
+        "seriepais[\"X\"]=range(1, len(seriepais)+1)\n",
+        "reg=LinearRegression()\n",
+        "X = seriepais.X.values.reshape(-1,1)\n",
+        "y = seriepais[\"Japan\"].values.reshape(-1,1)\n",
+        "reg.fit(X=X, y=y)\n",
+        "alfas[\"Japan\"] = reg.coef_[0][0]\n",
+        "betas[\"Japan\"] = reg.intercept_[0]\n",
+        "score[\"Japan\"] =reg.score(X,y)\n",
+        "\n",
         "dfalfas=pd.DataFrame(alfas, index=alfas.keys())\n",
         "\n",
         "pendientes=pd.DataFrame(dfalfas.iloc[0])\n",
@@ -391,7 +419,7 @@
         " locationmode = \"ISO-3\", \n",
         " z = predicciones[2050])\n",
         "\n",
-        "layout2 = dict(title = 'Pronóstico de Consumo energías limpias / Consumo total en 2050', title_x=0.5, title_font_size=30, geo = {'scope':'world'})\n",
+        "layout2 = dict(title = 'Consumo energía limpia / Consumo total en 2050', title_x=0.5, geo = {'scope':'world'})\n",
         "FR_x2 = go.Figure(data=[data2],\n",
         "layout = layout2)\n",
         "st.write(FR_x2)\n",
@@ -506,17 +534,14 @@
         "ax = fig.add_axes([0,0,1,1])\n",
         "ax.bar(x,y)\n",
         "ax.set_title('Emisiones de CO2 (Mt)')\n",
-        "st.write(fig)\n",
-        "\n",
-        "\n",
-        "\n"
+        "st.write(fig)"
       ],
       "metadata": {
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
         "id": "mAoc_XDq80qN",
-        "outputId": "1f5dafc7-4d81-47dc-88cc-afab8885db94"
+        "outputId": "6e099030-e15c-4004-f38c-d0321087ca78"
       },
       "execution_count": null,
       "outputs": [
