@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyNVKxma9MFbsJIqc+E1cXlY",
+      "authorship_tag": "ABX9TyPvLfORUJpgzhihaE+8Zjwv",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -34,6 +34,15 @@
       "metadata": {
         "id": "jYNDg6rRa5f4"
       }
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "93BinkuI76io"
+      },
+      "execution_count": null,
+      "outputs": []
     },
     {
       "cell_type": "code",
@@ -158,6 +167,9 @@
         "                   xaxis_title='Año',\n",
         "                   yaxis_title='Porcentaje de incremento')\n",
         "st.plotly_chart(k_fig, use_container_width=True)\n",
+        "\n",
+        "\n",
+        "\n",
         "\n",
         "# Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza # Gonza\n",
         "query = 'SELECT an.\"Anio\", pa.\"Pais\", (enp.\"Consumo_Petroleo\" + enc.\"Consumo_Carbon\" + eng.\"Consumo_gas\") as \"Consumo total combustible fosiles\" FROM \"Energia_petroleo\" enp JOIN \"Energia_Carbon\" enc ON enp.\"Id_Pais\" = enc.\"Id_Pais\" AND enp.\"Id_anio\" = enc.\"Id_Anio\" JOIN \"Gas_Natural\" eng ON enp.\"Id_Pais\" = eng.\"Id_Pais\" AND enp.\"Id_anio\" = eng.\"Id_anio\" JOIN \"Paises\" pa ON enp.\"Id_Pais\" = pa.\"Id_Pais\" JOIN \"Años\" an ON enp.\"Id_anio\"=an.\"Id_anio\";'\n",
@@ -312,7 +324,7 @@
         "tablakpi5[\"KPI5\"]=tablakpi5[\"KPI5\"]*100\n",
         "tablakpi5[\"KPI5\"]=round(tablakpi5[\"KPI5\"],1)\n",
         "tablakpi5=tablakpi5.sort_values(\"KPI5\", ascending=False)\n",
-        "st.write(px.bar(tablakpi5, title=\"KPI4: Incremento interanual en puntos porcentuales del ratio Consumo Energías limpias/ Consumo Total (año 2021)\", labels={'x': 'Year', 'value':'Puntos porcentuales'}))\n",
+        "st.write(px.bar(tablakpi5, title=\"Incremento interanual del ratio Consumo Limpio / Consumo Total (2021)\", labels={'x': 'Year', 'value':'Puntos porcentuales'}))\n",
         "\n",
         "\n",
         "paiseskpi5=list(KPI5.index.values)\n",
@@ -424,6 +436,23 @@
         "layout = layout2)\n",
         "st.write(FR_x2)\n",
         "\n",
+        "#GRAFICO IRRADIANZA VS CAPACIDAD INSTALADA solar\n",
+        "\n",
+        "query1sol= 'SELECT p.\"Pais\", i.\"Irradianza\" FROM \"Irradianza\" i JOIN \"Paises\" p ON (i.\"Id_Pais\" = p.\"Id_Pais\") WHERE i.\"Id_Anio\"=56;'\n",
+        "irradianza=pd.read_sql_query(query1sol, con=conexion)\n",
+        "query2sol='SELECT p.\"Pais\", es.\"Instalada_solar\" FROM \"Energia_solar\" es JOIN \"Paises\" p ON (es.\"Id_Pais\" = p.\"Id_Pais\") WHERE es.\"Id_anio\"=56;'\n",
+        "FR_solar=pd.read_sql_query(query2sol, con=conexion)\n",
+        "datossolar=pd.merge(irradianza, FR_solar, on=\"Pais\")\n",
+        "st.write(px.scatter(data_frame=datossolar, \n",
+        "           x=\"Instalada_solar\", \n",
+        "           y=\"Irradianza\", \n",
+        "           hover_data=[\"Pais\"], \n",
+        "           title=\"Energía solar: irradianza vs capacidad instalada (2021)\", \n",
+        "           labels={'Irradianza': 'Irradianza (W/m2)', \"Instalada_solar\": \"Instalada_solar (MW)\"},\n",
+        "           color=\"Pais\"))\n",
+        "\n",
+        "\n",
+        "\n",
         "# Machine Learning # Machine Learning # Machine Learning # Machine Learning # Machine Learning\n",
         "\n",
         "import streamlit as st\n",
@@ -534,14 +563,15 @@
         "ax = fig.add_axes([0,0,1,1])\n",
         "ax.bar(x,y)\n",
         "ax.set_title('Emisiones de CO2 (Mt)')\n",
-        "st.write(fig)"
+        "st.write(fig)\n",
+        "\n"
       ],
       "metadata": {
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
         "id": "mAoc_XDq80qN",
-        "outputId": "6e099030-e15c-4004-f38c-d0321087ca78"
+        "outputId": "481d207b-9c55-410f-dc97-cadb5e2be4f6"
       },
       "execution_count": null,
       "outputs": [
