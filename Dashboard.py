@@ -103,7 +103,6 @@
         "import pandas as pd\n",
         "from sqlalchemy import create_engine\n",
         "import plotly.graph_objects as go\n",
-        "import folium\n",
         "\n",
         "conexion= create_engine('postgresql://{user}:{pw}@{host}:{port}/{db}'.format(\n",
         "    user='postgres', pw='postgres', host='database-grupo5.cgmzd7suyc4v.us-east-1.rds.amazonaws.com',port='5432',db='postgres', echo=False))\n",
